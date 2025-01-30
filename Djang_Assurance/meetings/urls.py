@@ -9,4 +9,3 @@ urlpatterns = [
     path('agenda/', StaffAgendaView.as_view(), name='agenda'),
     path('agenda/<str:week_start_date>/', StaffAgendaView.as_view(), name='agenda_by_date'),
 ]
-    # path('appointment/<int:staff_user_id>/', AppointmentCreateView.as_view(), name='appointment_create'),

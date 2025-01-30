@@ -4,9 +4,15 @@ from django.shortcuts import redirect
 
 class StaffRequiredMixin(UserPassesTestMixin):
     """
-    Vérifie que l'utilisateur est une licorne et redirige vers le profil sinon
-    """
+    Mixin pour vérifier que l'utilisateur est un membre du staff.
 
+    Méthodes :
+    ----------
+    test_func():
+        Vérifie si l'utilisateur connecté est un membre du staff.
+    handle_no_permission():
+        Redirige l'utilisateur vers la page de profil s'il n'a pas la permission.
+    """
     def test_func(self):
         return self.request.user.is_staff
 
@@ -16,9 +22,15 @@ class StaffRequiredMixin(UserPassesTestMixin):
 
 class UserRequiredMixin(UserPassesTestMixin):
     """
-    Vérifie que l'utilisateur n'est pas un membre du staff et redirige vers le profil si c'est le cas.
-    """
+    Mixin pour vérifier que l'utilisateur n'est pas un membre du staff.
 
+    Méthodes :
+    ----------
+    test_func():
+        Vérifie si l'utilisateur connecté n'est pas un membre du staff.
+    handle_no_permission():
+        Redirige l'utilisateur vers la page de profil s'il n'a pas la permission.
+    """
     def test_func(self):
         return not self.request.user.is_staff
 

@@ -6,25 +6,48 @@ from datetime import datetime, timedelta
 from django.views import View
 from user.models import StaffUser
 from django.core.exceptions import ValidationError
-from django.views.generic import TemplateView
-from django.utils.timezone import localdate
-from .models import Availability, Appointment, StaffUser
 from django.contrib.auth.mixins import LoginRequiredMixin
 from user.permissions import StaffRequiredMixin
 
 
 class StaffAgendaView(LoginRequiredMixin, StaffRequiredMixin, TemplateView):
+    """
+    Vue pour afficher l'agenda hebdomadaire d'un StaffUser.
+
+    Attributs :
+    -----------
+    template_name : str
+        Chemin vers le template utilisé pour afficher l'agenda.
+
+    Méthodes :
+    ----------
+    get_context_data(**kwargs):
+        Prépare les données nécessaires pour afficher l'agenda.
+    """
     template_name = 'meetings/meetings_list.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Prépare le contexte pour afficher l'agenda hebdomadaire.
+
+        Paramètres :
+        ------------
+        **kwargs : dict
+            Arguments supplémentaires passés à la vue.
+
+        Retourne :
+        ---------
+        dict
+            Contexte contenant les informations sur l'agenda.
+        """
         context = super().get_context_data(**kwargs)
-        
+
         # Récupérer l'utilisateur authentifié
         staff_user = StaffUser.objects.get(user=self.request.user)
-        
+
         # Récupérer la date de début de la semaine
         week_start_date = kwargs.get('week_start_date')
-        
+
         if not week_start_date:
             # Si pas de date dans l'URL, on prend la date de la semaine en cours
             week_start_date = timezone.now().date() - timedelta(days=timezone.now().weekday())
@@ -53,7 +76,7 @@ class StaffAgendaView(LoginRequiredMixin, StaffRequiredMixin, TemplateView):
             for slot in time_slots:
                 # Initialiser l'état à "Disponible"
                 state = ""
-                
+
                 # Vérifier si ce créneau correspond à une disponibilité
                 availability = availabilities.filter(
                     day_of_week=day,
@@ -62,14 +85,13 @@ class StaffAgendaView(LoginRequiredMixin, StaffRequiredMixin, TemplateView):
                 ).first()
                 if availability:
                     state = "Disponible"
-                
+
                 # Vérifier si un rendez-vous a été pris
                 appointment = appointments.filter(
                     date__week_day=day + 1,  # Django utilise 1 pour Lundi, 7 pour Dimanche
                     start_time=slot,
                 ).first()
                 if appointment:
-                    print(appointment)
                     state = appointment.user.username  # Afficher le username du client
 
                 agenda.append({
@@ -89,15 +111,34 @@ class StaffAgendaView(LoginRequiredMixin, StaffRequiredMixin, TemplateView):
 
 
 class StaffUserListView(LoginRequiredMixin, ListView):
+    """
+    Vue pour afficher la liste des StaffUsers.
+
+    Attributs :
+    -----------
+    model : Model
+        Modèle utilisé pour récupérer les données (ici, StaffUser).
+    template_name : str
+        Chemin vers le template utilisé pour afficher la liste.
+    context_object_name : str
+        Nom de la variable de contexte contenant les objets.
+    """
     model = StaffUser
     template_name = 'meetings/staff_user_list.html'
     context_object_name = 'staff_users'
-    # def get(self, request):
-    #     # Affiche tous les StaffUsers
-    #     staff_users = StaffUser.objects.all()
-    #     return render(request, 'meetings/staff_user_list.html', {'staff_users': staff_users})
+
 
 class SelectDateView(LoginRequiredMixin, View):
+    """
+    Vue pour sélectionner une date pour un rendez-vous.
+
+    Méthodes :
+    ----------
+    get(request, staff_user_id):
+        Affiche le formulaire pour sélectionner une date.
+    post(request, staff_user_id):
+        Traite la date sélectionnée et redirige vers la sélection de créneau horaire.
+    """
     def get(self, request, staff_user_id):
         staff_user = get_object_or_404(StaffUser, user__id=staff_user_id)
         return render(request, 'meetings/select_date.html', {
@@ -118,7 +159,18 @@ class SelectDateView(LoginRequiredMixin, View):
         # Rediriger vers la vue pour choisir l'heure
         return redirect('select_timeslot', staff_user_id=staff_user_id, date=selected_date)
 
+
 class SelectTimeslotView(LoginRequiredMixin, View):
+    """
+    Vue pour sélectionner un créneau horaire pour un rendez-vous.
+
+    Méthodes :
+    ----------
+    get(request, staff_user_id, date):
+        Affiche les créneaux horaires disponibles pour une date donnée.
+    post(request, staff_user_id, date):
+        Traite le créneau sélectionné et crée un rendez-vous.
+    """
     def get(self, request, staff_user_id, date):
         staff_user = get_object_or_404(StaffUser, user__id=staff_user_id)
         selected_date = datetime.strptime(date, '%Y-%m-%d').date()
@@ -145,9 +197,7 @@ class SelectTimeslotView(LoginRequiredMixin, View):
         ).values_list('start_time', flat=True)
 
         # Exclure les créneaux déjà réservés
-        available_timeslots_duplicate = [slot for slot in available_timeslots if slot not in booked_timeslots]
-        available_timeslots = list(set(available_timeslots_duplicate))
-        print(available_timeslots)
+        available_timeslots = [slot for slot in available_timeslots if slot not in booked_timeslots]
 
         return render(request, 'meetings/select_timeslot.html', {
             'staff_user': staff_user,
@@ -190,9 +240,35 @@ class SelectTimeslotView(LoginRequiredMixin, View):
 
 
 class UserListView(LoginRequiredMixin, TemplateView):
+    """
+    Vue pour afficher la liste des rendez-vous de l'utilisateur connecté.
+
+    Attributs :
+    -----------
+    template_name : str
+        Chemin vers le template utilisé pour afficher la liste des rendez-vous.
+
+    Méthodes :
+    ----------
+    get_context_data(**kwargs):
+        Prépare les données nécessaires pour afficher les rendez-vous de l'utilisateur.
+    """
     template_name = 'meetings/user_list.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Prépare le contexte pour afficher les rendez-vous de l'utilisateur.
+
+        Paramètres :
+        ------------
+        **kwargs : dict
+            Arguments supplémentaires passés à la vue.
+
+        Retourne :
+        ---------
+        dict
+            Contexte contenant les rendez-vous de l'utilisateur.
+        """
         context = super().get_context_data(**kwargs)
 
         # Récupérer tous les rendez-vous de l'utilisateur connecté
@@ -205,4 +281,3 @@ class UserListView(LoginRequiredMixin, TemplateView):
         context['staff_list_url'] = 'staff_list'
 
         return context
-

@@ -14,13 +14,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from user.permissions import StaffRequiredMixin, UserRequiredMixin
 from .models import Prediction
 
-# Team Unicorn: Views for handling Predictions
+# Team Unicorn : Vues pour gérer les prédictions
 
 
 class PredictionView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
     """
-    Handles the creation of a new Prediction object.
-    Uses the PredictionForm and redirects to the result page after saving.
+    Gère la création d'un nouvel objet Prediction.
+    Utilise le formulaire PredictionForm et redirige vers la page de résultat après l'enregistrement.
     """
 
     model = Prediction
@@ -29,46 +29,56 @@ class PredictionView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
 
     def form_valid(self, form):
         """
-        Process the form after validation:
-        - Save the prediction object without committing to the database.
-        - Call the `pred` method to compute the result.
-        - Call `fr_transform` to localize the fields.
-        - Save the object and redirect to the result view.
+        Traite le formulaire après validation :
+        - Enregistre l'objet Prediction sans le valider immédiatement dans la base de données.
+        - Appelle la méthode `pred` pour calculer le résultat.
+        - Appelle `fr_transform` pour localiser les champs.
+        - Enregistre l'objet et redirige vers la vue des résultats.
         """
-        self.object = form.save(commit=False)  # Save the object without committing.
+        self.object = form.save(commit=False)  # Enregistre l'objet sans le valider.
         self.object.made_by_staff = True
-        self.object.pred()  # Compute the prediction result.
-        self.object.fr_transform()  # Localize certain fields (e.g., sex, smoker).
+        self.object.pred()  # Calcule le résultat de la prédiction.
+        self.object.fr_transform()  # Localise certains champs (ex. : sexe, fumeur).
         self.object.made_by = self.request.user
-        self.object.save()  # Save the object to the database.
+        self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("result", pk=prediction_id)  # Redirect to the result page.
+        return redirect("result", pk=prediction_id)  # Redirige vers la page de résultat.
 
 
 class PredictionUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
+    """
+    Gère la mise à jour d'un objet Prediction existant.
+    Utilise le formulaire PredictionForm.
+    """
+
     model = Prediction
     template_name = "app/prediction_update.html"
     form_class = PredictionForm
 
     def form_valid(self, form):
         """
-        Process the form after validation:
-        - Save the prediction object without committing to the database.
-        - Call the `pred` method to compute the result.
-        - Call `fr_transform` to localize the fields.
-        - Save the object and redirect to the result view.
+        Traite le formulaire après validation :
+        - Enregistre l'objet Prediction sans le valider immédiatement dans la base de données.
+        - Appelle la méthode `pred` pour calculer le résultat.
+        - Appelle `fr_transform` pour localiser les champs.
+        - Enregistre l'objet et redirige vers la vue des résultats.
         """
-        self.object = form.save(commit=False)  # Save the object without committing.
+        self.object = form.save(commit=False)  # Enregistre l'objet sans le valider.
         self.object.made_by_staff = True
-        self.object.pred()  # Compute the prediction result.
-        self.object.fr_transform()  # Localize certain fields (e.g., sex, smoker).
+        self.object.pred()  # Calcule le résultat de la prédiction.
+        self.object.fr_transform()  # Localise certains champs (ex. : sexe, fumeur).
         self.object.made_by = self.request.user
-        self.object.save()  # Save the object to the database.
+        self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("result", pk=prediction_id)  # Redirect to the result page.
+        return redirect("result", pk=prediction_id)  # Redirige vers la page de résultat.
 
 
 class PredictionDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
+    """
+    Gère la suppression d'un objet Prediction.
+    Redirige vers la liste des résultats après suppression.
+    """
+
     model = Prediction
     template_name = "app/prediction_confirm_delete.html"
     success_url = reverse_lazy("results")
@@ -77,7 +87,7 @@ class PredictionDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
 class PredictionsListView(LoginRequiredMixin, StaffRequiredMixin, ListView, FormView):
     """
     Vue combinée ListView et FormView pour afficher les prédictions avec
-    options de filtrage et de tri.
+    des options de filtrage et de tri.
     """
 
     model = Prediction
@@ -158,20 +168,23 @@ class PredictionsListView(LoginRequiredMixin, StaffRequiredMixin, ListView, Form
 
 class ResultView(LoginRequiredMixin, StaffRequiredMixin, DetailView):
     """
-    Displays the details of a single Prediction object.
+    Affiche les détails d'un objet Prediction spécifique.
     """
 
     model = Prediction
     template_name = "app/result.html"
-    context_object_name = (
-        "prediction"  # Use 'prediction' as the context variable in the template.
-    )
+    context_object_name = "prediction"  # Utilise 'prediction' comme variable de contexte dans le template.
 
 
-# Views for User-specific Predictions
+# Vues pour les prédictions spécifiques aux utilisateurs
 
 
 class UserPredictionView(LoginRequiredMixin, UserRequiredMixin, View):
+    """
+    Vérifie si une prédiction existe pour l'utilisateur connecté.
+    Redirige vers la vue de résultat utilisateur ou vers la création d'une prédiction.
+    """
+
     def get(self, request, *args, **kwargs):
         try:
             # Vérifie si une prédiction existe pour l'utilisateur
@@ -184,9 +197,9 @@ class UserPredictionView(LoginRequiredMixin, UserRequiredMixin, View):
 
 class UserCreatePredictionView(LoginRequiredMixin, UserRequiredMixin, CreateView):
     """
-    Handles the creation of a new Prediction object for a user.
-    Uses the UserPredictionForm and excludes fields like `reg_model` and `result`.
-    Redirects to the user result page after saving.
+    Gère la création d'un nouvel objet Prediction pour un utilisateur.
+    Utilise le formulaire UserPredictionForm et exclut certains champs comme `reg_model` et `result`.
+    Redirige vers la page de résultat utilisateur après l'enregistrement.
     """
 
     model = Prediction
@@ -195,53 +208,54 @@ class UserCreatePredictionView(LoginRequiredMixin, UserRequiredMixin, CreateView
 
     def form_valid(self, form):
         """
-        Process the form after validation:
-        - Save the prediction object without committing to the database.
-        - Compute the prediction result and localize certain fields.
-        - Save the object and redirect to the user-specific result view.
+        Traite le formulaire après validation :
+        - Enregistre l'objet Prediction sans le valider immédiatement dans la base de données.
+        - Calcule le résultat de la prédiction et localise certains champs.
+        - Enregistre l'objet et redirige vers la vue de résultat utilisateur.
         """
-        self.object = form.save(commit=False)  # Save the object without committing.
-        self.object.pred()  # Compute the prediction result.
-        self.object.fr_transform()  # Localize certain fields (e.g., sex, smoker).
+        self.object = form.save(commit=False)  # Enregistre l'objet sans le valider.
+        self.object.pred()  # Calcule le résultat de la prédiction.
+        self.object.fr_transform()  # Localise certains champs (ex. : sexe, fumeur).
         self.object.user_id = self.request.user
         self.object.made_by = self.request.user
-        self.object.save()  # Save the object to the database.
+        self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect(
-            "user_result", pk=prediction_id
-        )  # Redirect to the user-specific result page.
+        return redirect("user_result", pk=prediction_id)  # Redirige vers la page de résultat utilisateur.
 
 
 class UserResultView(LoginRequiredMixin, UserRequiredMixin, DetailView):
     """
-    Displays the details of a single Prediction object created by a user.
+    Affiche les détails d'un objet Prediction créé par un utilisateur.
     """
 
     model = Prediction
     template_name = "app/user_result.html"
-    context_object_name = (
-        "prediction"  # Use 'prediction' as the context variable in the template.
-    )
+    context_object_name = "prediction"  # Utilise 'prediction' comme variable de contexte dans le template.
 
 
 class UserPredictionUpdateView(LoginRequiredMixin, UserRequiredMixin, UpdateView):
+    """
+    Gère la mise à jour d'un objet Prediction existant pour un utilisateur.
+    Utilise le formulaire UserPredictionForm.
+    """
+
     model = Prediction
     template_name = "app/user_prediction_update.html"
     form_class = UserPredictionForm
 
     def form_valid(self, form):
         """
-        Process the form after validation:
-        - Save the prediction object without committing to the database.
-        - Call the `pred` method to compute the result.
-        - Call `fr_transform` to localize the fields.
-        - Save the object and redirect to the result view.
+        Traite le formulaire après validation :
+        - Enregistre l'objet Prediction sans le valider immédiatement dans la base de données.
+        - Appelle la méthode `pred` pour calculer le résultat.
+        - Appelle `fr_transform` pour localiser les champs.
+        - Enregistre l'objet et redirige vers la vue de résultat utilisateur.
         """
-        self.object = form.save(commit=False)  # Save the object without committing.
-        self.object.pred()  # Compute the prediction result.
-        self.object.fr_transform()  # Localize certain fields (e.g., sex, smoker).
+        self.object = form.save(commit=False)  # Enregistre l'objet sans le valider.
+        self.object.pred()  # Calcule le résultat de la prédiction.
+        self.object.fr_transform()  # Localise certains champs (ex. : sexe, fumeur).
         self.object.made_by = self.request.user
         self.object.user_id = self.request.user
-        self.object.save()  # Save the object to the database.
+        self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("user_result", pk=prediction_id)  # Redirect to the result page.
+        return redirect("user_result", pk=prediction_id)  # Redirige vers la page de résultat utilisateur.
