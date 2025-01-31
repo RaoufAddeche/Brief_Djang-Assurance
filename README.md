@@ -1,6 +1,6 @@
 # Djang Assurance
 
-![image](Djang_Assurance/theme/static/css/dist/logo.jpg)
+![image](Djang_Assurance/staticfiles/css/dist/logo.jpg)
 
 ## Description
 
