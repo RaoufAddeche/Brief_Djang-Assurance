@@ -64,14 +64,14 @@ Après avoir été sélectionné avec un premier POC sur Streamlit, l'équipe **
 
 | Fichier/Dossier              | Description                                                                 |
 |------------------------------|-----------------------------------------------------------------------------|
-| [DJANGASSURANCE/Djang_Assurance](Djang_assurance)             | Dossier principal du projet. Contient les settings et les chemins                                               |
-| [DJANGASSURANCE/app/](DJANGASSURANCE/app)      | Contient les applications pour faire les prédictions pour les users et le staff                     |
-| [DJANGASSURANCE/infos](DJANGASSURANCE/infos) | Contient les templates pour toutes les pages informatives du site                           |
-| [DJANGASSURANCE/meetings](DJANGASSURANCE/meetings)    | Contient les applications de gestions de réservations et de planning                      |
-| [DJANGASSURANCE/staticfiles](DJANGASSURANCE/staticfiles)      | Contient l'ensemble des medias, des classes css et du js.           |
-| [DJANGASSURANCE/theme](DJANGASSURANCE/theme)   | Gestion du front, contient le template de base HTML, le header et le footer    |
-| [DJANGASSURANCE/user](DJANGASSURANCE/user)  | Gestion des classes Users et Staff, Inscription et Connexion         |
-| [DJANGASSURANCE/db.sqlite3](DJANGASSURANCE/db.sqlite3)     | Base de données contenant toutes les tables user, staff, meetings, availability, contacts et prédictions                                      |
+| [djangassurance/Djang_Assurance](Djang_assurance)             | Dossier principal du projet. Contient les settings et les chemins                                               |
+| [djangassurance/app/](djangassurance/app)      | Contient les applications pour faire les prédictions pour les users et le staff                     |
+| [djangassuranceinfos](djangassurance/infos) | Contient les templates pour toutes les pages informatives du site                           |
+| [djangassurance/meetings](djangassurance/meetings)    | Contient les applications de gestions de réservations et de planning                      |
+| [djangassurance/staticfiles](djangassurance/staticfiles)      | Contient l'ensemble des medias, des classes css et du js.           |
+| [djangassurance/theme](djangassurance/theme)   | Gestion du front, contient le template de base HTML, le header et le footer    |
+| [Ddjangassurance/user](DJANGASSURANCE/user)  | Gestion des classes Users et Staff, Inscription et Connexion         |
+| [djangassurance/db.sqlite3](DJANGASSURANCE/db.sqlite3)     | Base de données contenant toutes les tables user, staff, meetings, availability, contacts et prédictions                                      |
 | [requirements.txt](requirements.txt)           | Liste des dépendances Python nécessaires pour le projet.                   |
 | [manage.py](manage.py)                | Fichier de configuration et éxecution de                    |
 | [bricospider.csv](bricospider.csv)           | Export des données brutes scrappées au format CSV.                                                           |
