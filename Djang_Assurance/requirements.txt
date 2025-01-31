@@ -7,3 +7,4 @@ django-tailwind==3.8.0
 pandas==2.2.3
 cloudpickle==3.1.1
 whitenoise==6.8.2
+django-widget-tweaks==1.5.0
