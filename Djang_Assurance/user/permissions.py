@@ -13,6 +13,7 @@ class StaffRequiredMixin(UserPassesTestMixin):
     handle_no_permission():
         Redirige l'utilisateur vers la page de profil s'il n'a pas la permission.
     """
+
     def test_func(self):
         return self.request.user.is_staff
 
@@ -31,6 +32,7 @@ class UserRequiredMixin(UserPassesTestMixin):
     handle_no_permission():
         Redirige l'utilisateur vers la page de profil s'il n'a pas la permission.
     """
+
     def test_func(self):
         return not self.request.user.is_staff
 

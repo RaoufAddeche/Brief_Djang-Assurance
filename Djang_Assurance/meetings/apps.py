@@ -17,8 +17,9 @@ class MeetingsConfig(AppConfig):
     ready():
         Méthode appelée lorsque l'application est prête. Utilisée ici pour importer les signaux.
     """
-    default_auto_field = 'django.db.models.BigAutoField'  # Utilise un champ auto-incrémenté pour les clés primaires.
-    name = 'meetings'  # Nom de l'application.
+
+    default_auto_field = "django.db.models.BigAutoField"  # Utilise un champ auto-incrémenté pour les clés primaires.
+    name = "meetings"  # Nom de l'application.
 
     def ready(self):
         """

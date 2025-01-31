@@ -1,6 +1,7 @@
 from django import forms
 from .models import CustomUser
 
+
 class InscriptionForm(forms.ModelForm):
     """
     Formulaire d'inscription pour les nouveaux utilisateurs.
@@ -19,16 +20,25 @@ class InscriptionForm(forms.ModelForm):
     labels : dict
         Étiquettes personnalisées pour les champs du formulaire.
     """
+
     mot_de_passe = forms.CharField(widget=forms.PasswordInput, label="Mot de passe")
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'prenom', 'nom', 'mot_de_passe', 'username', 'age', 'adresse']
+        fields = [
+            "email",
+            "prenom",
+            "nom",
+            "mot_de_passe",
+            "username",
+            "age",
+            "adresse",
+        ]
         labels = {
-            'username': 'Nom d\'utilisateur',
-            'email': 'Adresse e-mail',
-            'age': 'Âge',
-            'adresse': 'Adresse physique'
+            "username": "Nom d'utilisateur",
+            "email": "Adresse e-mail",
+            "age": "Âge",
+            "adresse": "Adresse physique",
         }
 
 
@@ -43,6 +53,7 @@ class ModifProfilForm(forms.ModelForm):
     fields : list
         Liste des champs inclus dans le formulaire.
     """
+
     class Meta:
         model = CustomUser
-        fields = ['prenom', 'nom', 'email', 'age', 'adresse']
+        fields = ["prenom", "nom", "email", "age", "adresse"]

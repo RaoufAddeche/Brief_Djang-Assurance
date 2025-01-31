@@ -15,7 +15,8 @@ class NewsView(TemplateView):
     template_name : str
         Chemin vers le template utilisé pour afficher la page.
     """
-    template_name = 'infos/news.html'  # Template pour la page des actualités.
+
+    template_name = "infos/news.html"  # Template pour la page des actualités.
 
 
 class AboutView(TemplateView):
@@ -27,7 +28,8 @@ class AboutView(TemplateView):
     template_name : str
         Chemin vers le template utilisé pour afficher la page.
     """
-    template_name = 'infos/about.html'  # Template pour la page "À propos".
+
+    template_name = "infos/about.html"  # Template pour la page "À propos".
 
 
 class PrivacyView(TemplateView):
@@ -39,7 +41,10 @@ class PrivacyView(TemplateView):
     template_name : str
         Chemin vers le template utilisé pour afficher la page.
     """
-    template_name = 'infos/privacy.html'  # Template pour la page de politique de confidentialité.
+
+    template_name = (
+        "infos/privacy.html"  # Template pour la page de politique de confidentialité.
+    )
 
 
 class ContactView(FormView):
@@ -55,9 +60,12 @@ class ContactView(FormView):
     success_url : str
         URL vers laquelle rediriger après la soumission réussie du formulaire.
     """
-    template_name = 'infos/contact.html'  # Template pour la page de contact.
-    form_class = ContactForm  # Formulaire utilisé pour collecter les données de contact.
-    success_url = reverse_lazy('contact')  # Redirection après soumission réussie.
+
+    template_name = "infos/contact.html"  # Template pour la page de contact.
+    form_class = (
+        ContactForm  # Formulaire utilisé pour collecter les données de contact.
+    )
+    success_url = reverse_lazy("contact")  # Redirection après soumission réussie.
 
     def form_valid(self, form):
         """
@@ -77,5 +85,10 @@ class ContactView(FormView):
         """
         form.save()  # Enregistre les données du formulaire.
         # Ajoute un message de succès pour informer l'utilisateur.
-        messages.success(self.request, "Votre message a bien été envoyé. Merci de nous avoir contactés !")
-        return super().form_valid(form)  # Appelle la méthode parente pour gérer la redirection.
+        messages.success(
+            self.request,
+            "Votre message a bien été envoyé. Merci de nous avoir contactés !",
+        )
+        return super().form_valid(
+            form
+        )  # Appelle la méthode parente pour gérer la redirection.

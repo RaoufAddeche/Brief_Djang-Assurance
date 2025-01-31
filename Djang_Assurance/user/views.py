@@ -19,6 +19,7 @@ class RedirectionView(LoginRequiredMixin, View):
     get(request, *args, **kwargs):
         Redirige les utilisateurs staff vers "prediction" et les autres vers "user_prediction".
     """
+
     def get(self, request, *args, **kwargs):
         if request.user.is_staff:
             return redirect("prediction")
@@ -46,6 +47,7 @@ class InscriptionView(FormView):
     form_invalid(form):
         Affiche un message d'erreur si le formulaire est invalide.
     """
+
     template_name = "user/inscription.html"
     form_class = InscriptionForm
     success_url = reverse_lazy("connexion")
@@ -86,6 +88,7 @@ class Connexion(LoginView):
     form_invalid(form):
         Affiche un message d'erreur si les informations de connexion sont incorrectes.
     """
+
     template_name = "user/connexion.html"
     redirect_authenticated_user = True
 
@@ -106,6 +109,7 @@ class DeconnexionView(LogoutView):
     next_page : str
         URL de redirection après la déconnexion.
     """
+
     next_page = reverse_lazy("accueil")
 
 
@@ -123,6 +127,7 @@ class Accueil(TemplateView):
     get_context_data(**kwargs):
         Ajoute l'utilisateur connecté au contexte.
     """
+
     template_name = "user/accueil.html"
 
     def get_context_data(self, **kwargs):
@@ -145,6 +150,7 @@ class ProfilView(LoginRequiredMixin, TemplateView):
     get_context_data(**kwargs):
         Ajoute l'utilisateur connecté au contexte.
     """
+
     template_name = "user/profil.html"
 
     def get_context_data(self, **kwargs):
@@ -173,6 +179,7 @@ class ModifProfilView(LoginRequiredMixin, UpdateView):
     get_object():
         Retourne l'utilisateur connecté.
     """
+
     model = CustomUser
     form_class = ModifProfilForm
     template_name = "user/modif_profil.html"
@@ -198,6 +205,7 @@ class SuppressionUser(LoginRequiredMixin, View):
     post(request, *args, **kwargs):
         Supprime le compte utilisateur et redirige vers la page d'accueil.
     """
+
     template_name = "user/suppression_compte.html"
 
     def get(self, request, *args, **kwargs):

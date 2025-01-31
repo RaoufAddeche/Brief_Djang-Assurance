@@ -19,6 +19,7 @@ class CustomUser(AbstractUser):
     adresse : TextField
         Adresse physique de l'utilisateur (optionnelle).
     """
+
     prenom = models.CharField(max_length=30, null=False)
     nom = models.CharField(max_length=30, null=False)
     age = models.PositiveIntegerField(null=True, blank=True)
@@ -47,6 +48,7 @@ class StaffUser(models.Model):
     verbose_name_plural : str
         Nom pluriel affiché dans l'interface d'administration.
     """
+
     img = models.CharField(max_length=255, null=True, blank=True)
     user = models.OneToOneField(
         CustomUser,

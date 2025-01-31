@@ -12,5 +12,6 @@ class InfosConfig(AppConfig):
     name : str
         Nom de l'application (doit correspondre au nom du dossier contenant l'application).
     """
-    default_auto_field = 'django.db.models.BigAutoField'  # Utilise un champ auto-incrémenté pour les clés primaires.
-    name = 'infos'  # Nom de l'application.
+
+    default_auto_field = "django.db.models.BigAutoField"  # Utilise un champ auto-incrémenté pour les clés primaires.
+    name = "infos"  # Nom de l'application.

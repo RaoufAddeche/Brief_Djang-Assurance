@@ -17,8 +17,9 @@ class UserConfig(AppConfig):
     ready():
         Méthode appelée lorsque l'application est prête. Utilisée ici pour importer les signaux.
     """
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'user'
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "user"
 
     def ready(self):
         """

@@ -19,6 +19,12 @@ class ContactForm(forms.ModelForm):
     fields : list
         Liste des champs inclus dans le formulaire.
     """
+
     class Meta:
         model = ContactBase  # Modèle associé au formulaire.
-        fields = ['name', 'mail', 'subject', 'message']  # Champs inclus dans le formulaire.
+        fields = [
+            "name",
+            "mail",
+            "subject",
+            "message",
+        ]  # Champs inclus dans le formulaire.

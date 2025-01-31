@@ -42,7 +42,9 @@ class PredictionView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
         self.object.made_by = self.request.user
         self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("result", pk=prediction_id)  # Redirige vers la page de résultat.
+        return redirect(
+            "result", pk=prediction_id
+        )  # Redirige vers la page de résultat.
 
 
 class PredictionUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
@@ -70,7 +72,9 @@ class PredictionUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
         self.object.made_by = self.request.user
         self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("result", pk=prediction_id)  # Redirige vers la page de résultat.
+        return redirect(
+            "result", pk=prediction_id
+        )  # Redirige vers la page de résultat.
 
 
 class PredictionDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
@@ -220,7 +224,9 @@ class UserCreatePredictionView(LoginRequiredMixin, UserRequiredMixin, CreateView
         self.object.made_by = self.request.user
         self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("user_result", pk=prediction_id)  # Redirige vers la page de résultat utilisateur.
+        return redirect(
+            "user_result", pk=prediction_id
+        )  # Redirige vers la page de résultat utilisateur.
 
 
 class UserResultView(LoginRequiredMixin, UserRequiredMixin, DetailView):
@@ -258,4 +264,6 @@ class UserPredictionUpdateView(LoginRequiredMixin, UserRequiredMixin, UpdateView
         self.object.user_id = self.request.user
         self.object.save()  # Enregistre l'objet dans la base de données.
         prediction_id = self.object.id
-        return redirect("user_result", pk=prediction_id)  # Redirige vers la page de résultat utilisateur.
+        return redirect(
+            "user_result", pk=prediction_id
+        )  # Redirige vers la page de résultat utilisateur.

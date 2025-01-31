@@ -19,8 +19,9 @@ class AppConfig(AppConfig):
         Méthode appelée lorsque l'application est prête. Elle est utilisée ici pour
         importer les signaux définis dans 'app.signals'.
     """
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'app'
+
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "app"
 
     def ready(self):
         """

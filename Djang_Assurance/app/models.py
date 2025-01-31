@@ -5,22 +5,17 @@ import pandas as pd
 import cloudpickle
 
 # Définition des choix pour les champs de type `CharField`
-SEX_CHOICES = (
-    ("female", "Femme"),
-    ("male", "Homme")
-)
+SEX_CHOICES = (("female", "Femme"), ("male", "Homme"))
 
-SMOKER_CHOICES = (
-    ("yes", "Oui"),
-    ("no", "Non")
-)
+SMOKER_CHOICES = (("yes", "Oui"), ("no", "Non"))
 
 REGION_CHOICES = (
     ("southeast", "Sud Est"),
     ("southwest", "Sud Ouest"),
     ("northeast", "Nord Est"),
-    ("northwest", "Nord Ouest")
+    ("northwest", "Nord Ouest"),
 )
+
 
 class Reg_model(models.Model):
     """
@@ -33,13 +28,14 @@ class Reg_model(models.Model):
     path : FilePathField
         Chemin vers le fichier sérialisé contenant le modèle de régression.
     """
+
     name = models.CharField(
         max_length=200,
-        help_text="Le nom du modèle de régression (ex. : 'Lasso Regression Model')."
+        help_text="Le nom du modèle de régression (ex. : 'Lasso Regression Model').",
     )
     path = models.FilePathField(
-        path='app/regression/models/',
-        help_text="Le chemin vers le fichier sérialisé du modèle de régression."
+        path="app/regression/models/",
+        help_text="Le chemin vers le fichier sérialisé du modèle de régression.",
     )
 
     def calcul_prediction(self, age, sex, weight, size, children, smoker, region):
@@ -73,12 +69,12 @@ class Reg_model(models.Model):
         # Création d'un DataFrame avec les données utilisateur
         data = pd.DataFrame(
             data=[[age, sex, bmi, children, smoker, region]],
-            columns=["age", "sex", "bmi", "children", "smoker", "region"]
+            columns=["age", "sex", "bmi", "children", "smoker", "region"],
         )
         print(data)
         print(data.dtypes)
         # Chargement du modèle sérialisé
-        with open(self.path, 'rb') as f:
+        with open(self.path, "rb") as f:
             reg = cloudpickle.load(f)
         # Prédiction à l'aide du modèle
         prediction = reg.predict(data)
@@ -119,15 +115,26 @@ class Prediction(models.Model):
     made_by_staff : bool
         Indique si la prédiction a été effectuée par un membre du personnel.
     """
-    age = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(130)], default=10)
+
+    age = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(130)], default=10
+    )
     sex = models.CharField(max_length=6, choices=SEX_CHOICES, default="female")
-    weight = models.FloatField(validators=[MinValueValidator(1), MaxValueValidator(300)], default=60)
-    size = models.FloatField(validators=[MinValueValidator(30), MaxValueValidator(300)], default=170)
-    children = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(20)], default=5)
+    weight = models.FloatField(
+        validators=[MinValueValidator(1), MaxValueValidator(300)], default=60
+    )
+    size = models.FloatField(
+        validators=[MinValueValidator(30), MaxValueValidator(300)], default=170
+    )
+    children = models.IntegerField(
+        validators=[MinValueValidator(0), MaxValueValidator(20)], default=5
+    )
     smoker = models.CharField(max_length=3, choices=SMOKER_CHOICES, default="no")
     region = models.CharField(max_length=9, choices=REGION_CHOICES, default="northwest")
     result = models.FloatField(null=True)
-    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, related_name='profile')
+    user_id = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, null=True, related_name="profile"
+    )
     reg_model = models.ForeignKey(Reg_model, on_delete=models.SET_NULL, null=True)
     made_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     made_by_staff = models.BooleanField(default=False)
@@ -147,7 +154,13 @@ class Prediction(models.Model):
         if self.made_by_staff:
             # Utilisation du modèle de régression spécifié
             pred = self.reg_model.calcul_prediction(
-                self.age, self.sex, self.weight, self.size, self.children, self.smoker, self.region
+                self.age,
+                self.sex,
+                self.weight,
+                self.size,
+                self.children,
+                self.smoker,
+                self.region,
             )[0]
         else:
             # Si aucun modèle spécifique n'est choisi, on utilise la prédiction la plus coûteuse
@@ -156,7 +169,13 @@ class Prediction(models.Model):
             for model in reg_models:
                 pred_list.append(
                     model.calcul_prediction(
-                        self.age, self.sex, self.weight, self.size, self.children, self.smoker, self.region
+                        self.age,
+                        self.sex,
+                        self.weight,
+                        self.size,
+                        self.children,
+                        self.smoker,
+                        self.region,
                     )[0]
                 )
             pred_list.sort()
@@ -173,16 +192,24 @@ class Prediction(models.Model):
         - region : Noms anglais -> Noms français
         """
         match self.sex:
-            case 'female': self.sex = 'femme'
-            case 'male': self.sex = 'homme'
+            case "female":
+                self.sex = "femme"
+            case "male":
+                self.sex = "homme"
         match self.smoker:
-            case 'yes': self.smoker = 'oui'
-            case 'no': self.smoker = 'non'
+            case "yes":
+                self.smoker = "oui"
+            case "no":
+                self.smoker = "non"
         match self.region:
-            case "southeast": self.region = "Sud Est"
-            case "southwest": self.region = "Sud Ouest"
-            case "northeast": self.region = "Nord Est"
-            case "northwest": self.region = "Nord Ouest"
+            case "southeast":
+                self.region = "Sud Est"
+            case "southwest":
+                self.region = "Sud Ouest"
+            case "northeast":
+                self.region = "Nord Est"
+            case "northwest":
+                self.region = "Nord Ouest"
 
     def en_transform(self):
         """
@@ -194,13 +221,21 @@ class Prediction(models.Model):
         - region : Noms français -> Noms anglais
         """
         match self.sex:
-            case 'femme': self.sex = 'female'
-            case 'homme': self.sex = 'male'
+            case "femme":
+                self.sex = "female"
+            case "homme":
+                self.sex = "male"
         match self.smoker:
-            case 'oui': self.smoker = 'yes'
-            case 'non': self.smoker = 'no'
+            case "oui":
+                self.smoker = "yes"
+            case "non":
+                self.smoker = "no"
         match self.region:
-            case "Sud Est": self.region = "southeast"
-            case "Sud Ouest": self.region = "southwest"
-            case "Nord Est": self.region = "northeast"
-            case "Nord Ouest": self.region = "northwest"
+            case "Sud Est":
+                self.region = "southeast"
+            case "Sud Ouest":
+                self.region = "southwest"
+            case "Nord Est":
+                self.region = "northeast"
+            case "Nord Ouest":
+                self.region = "northwest"

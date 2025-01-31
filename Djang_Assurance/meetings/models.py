@@ -29,27 +29,35 @@ class Availability(models.Model):
     __str__():
         Retourne une représentation lisible de la disponibilité (jour et plage horaire).
     """
+
     DAYS_OF_WEEK = [
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
-        (5, 'Saturday'),
-        (6, 'Sunday'),
+        (0, "Monday"),
+        (1, "Tuesday"),
+        (2, "Wednesday"),
+        (3, "Thursday"),
+        (4, "Friday"),
+        (5, "Saturday"),
+        (6, "Sunday"),
     ]
 
     staff_user = models.ForeignKey(
-        StaffUser,
-        on_delete=models.CASCADE,
-        related_name='availabilities'
+        StaffUser, on_delete=models.CASCADE, related_name="availabilities"
     )  # Membre du personnel associé à cette disponibilité.
-    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)  # Jour de la semaine (exemple : 0 = lundi).
-    start_time = models.TimeField()  # Heure de début de la disponibilité (exemple : 13:00).
+    day_of_week = models.IntegerField(
+        choices=DAYS_OF_WEEK
+    )  # Jour de la semaine (exemple : 0 = lundi).
+    start_time = (
+        models.TimeField()
+    )  # Heure de début de la disponibilité (exemple : 13:00).
     end_time = models.TimeField()  # Heure de fin de la disponibilité (exemple : 16:00).
 
     class Meta:
-        unique_together = ('staff_user', 'day_of_week', 'start_time', 'end_time')  # Contrainte d'unicité.
+        unique_together = (
+            "staff_user",
+            "day_of_week",
+            "start_time",
+            "end_time",
+        )  # Contrainte d'unicité.
 
     def __str__(self):
         """
@@ -88,22 +96,24 @@ class Appointment(models.Model):
     clean():
         Vérifie si le rendez-vous respecte les disponibilités du membre du personnel.
     """
+
     user = models.ForeignKey(
-        CustomUser,
-        on_delete=models.CASCADE,
-        related_name='appointments'
+        CustomUser, on_delete=models.CASCADE, related_name="appointments"
     )  # Utilisateur qui prend le rendez-vous.
     staff_user = models.ForeignKey(
-        StaffUser,
-        on_delete=models.CASCADE,
-        related_name='appointments_with_staff'
+        StaffUser, on_delete=models.CASCADE, related_name="appointments_with_staff"
     )  # Membre du personnel concerné par le rendez-vous.
     date = models.DateField()  # Date du rendez-vous.
     start_time = models.TimeField()  # Heure de début du rendez-vous.
     end_time = models.TimeField()  # Heure de fin du rendez-vous.
 
     class Meta:
-        unique_together = ('staff_user', 'date', 'start_time', 'end_time')  # Contrainte d'unicité.
+        unique_together = (
+            "staff_user",
+            "date",
+            "start_time",
+            "end_time",
+        )  # Contrainte d'unicité.
 
     def __str__(self):
         """
@@ -125,6 +135,7 @@ class Appointment(models.Model):
             Si le rendez-vous ne correspond pas aux disponibilités du membre du personnel.
         """
         from django.core.exceptions import ValidationError
+
         # Recherche une disponibilité correspondant au jour, à l'heure de début et à l'heure de fin.
         availability = Availability.objects.filter(
             staff_user=self.staff_user,
@@ -134,4 +145,6 @@ class Appointment(models.Model):
         )
         if not availability.exists():
             # Lève une erreur si aucune disponibilité ne correspond.
-            raise ValidationError("This appointment is outside the staff user's availability.")
+            raise ValidationError(
+                "This appointment is outside the staff user's availability."
+            )

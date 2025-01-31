@@ -18,6 +18,7 @@ class ContactBase(models.Model):
     message : TextField
         Contenu du message (facultatif, champ texte).
     """
+
     name = models.CharField(max_length=100, null=False)  # Nom du contact (obligatoire).
     mail = models.CharField(max_length=250, null=False)  # Adresse e-mail (obligatoire).
     subject = models.CharField(max_length=100)  # Sujet du message (facultatif).

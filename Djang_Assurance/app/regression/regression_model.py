@@ -21,6 +21,7 @@ class BmiTransformer(BaseEstimator, TransformerMixin):
     transform(X0) :
         Transforme les données en ajoutant une colonne "bmi_category" avec les catégories d'IMC.
     """
+
     def __init__(self, columns=None, k=29.999):
         self.columns = columns
         self.k = k
@@ -75,6 +76,7 @@ class AgeTransformer(BaseEstimator, TransformerMixin):
     transform(X0) :
         Transforme les données en ajoutant une colonne "age_category" avec les catégories d'âge.
     """
+
     def __init__(self, columns=None, k=35):
         self.columns = columns
         self.k = k

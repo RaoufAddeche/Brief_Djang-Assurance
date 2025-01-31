@@ -10,4 +10,5 @@ class ThemeConfig(AppConfig):
     name : str
         Nom de l'application (doit correspondre au nom du dossier contenant l'application).
     """
-    name = 'theme'
+
+    name = "theme"
