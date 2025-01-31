@@ -8,9 +8,8 @@ from .views import (
 
 
 urlpatterns = [
-    path('news/', NewsView.as_view(), name='news'),
-    path('about/', AboutView.as_view(), name='about'),
-    path('privacy/', PrivacyView.as_view(), name='privacy'),
-    path('contact/', ContactView.as_view(), name='contact'),
-
+    path("news/", NewsView.as_view(), name="news"),
+    path("about/", AboutView.as_view(), name="about"),
+    path("privacy/", PrivacyView.as_view(), name="privacy"),
+    path("contact/", ContactView.as_view(), name="contact"),
 ]
