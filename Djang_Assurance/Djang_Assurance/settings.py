@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -90,11 +91,14 @@ WSGI_APPLICATION = "Djang_Assurance.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Replace the SQLite DATABASES configuration with PostgreSQL:
 DATABASES = {
+
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": os.getenv("DATABASE_NAME", os.path.join(BASE_DIR, "db.sqlite3")),
     }
+
 }
 
 
